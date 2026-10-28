@@ -28,40 +28,76 @@
 
       <label for="valor_inicial">Valor inicial (R$)</label>
       <input id="valor_inicial" type="number" min="0" step="0.01" value="1000">
+      <p class="texto-ajuda">
+        É o dinheiro que você já tem hoje para começar o investimento.
+      </p>
 
       <label for="aporte_mensal">Aporte mensal (R$)</label>
       <input id="aporte_mensal" type="number" min="0" step="0.01" value="100">
+      <p class="texto-ajuda">
+        É o valor que você pretende guardar e investir todo mês, além do valor inicial.
+        Exemplo: se você colocar R$ 100, o simulador considera que você adicionará R$ 100 por mês durante todo o prazo.
+      </p>
 
       <label for="meses">Prazo (meses)</label>
       <input id="meses" type="number" min="1" value="24">
+      <p class="texto-ajuda">
+        É por quantos meses o dinheiro ficará investido.
+        Exemplo: 24 meses equivalem a 2 anos.
+      </p>
 
       <div id="campos_cdi">
         <label for="cdi_aa">CDI anual (%)</label>
         <input id="cdi_aa" type="number" step="0.01" value="13.65">
+        <p class="texto-ajuda">
+          O CDI é uma taxa usada como referência para vários investimentos no Brasil.
+          Normalmente, esse campo é preenchido automaticamente.
+        </p>
 
         <label for="percentual_cdi">Percentual do CDI (%)</label>
         <input id="percentual_cdi" type="number" step="0.1" value="100">
+        <p class="texto-ajuda">
+          Mostra quanto do CDI o investimento paga.
+          Exemplo: 100% do CDI acompanha totalmente o CDI; 90% do CDI paga um pouco menos.
+        </p>
       </div>
 
       <div id="campos_prefixado" class="oculto">
         <label for="taxa_prefixada_aa">Taxa prefixada anual (%)</label>
         <input id="taxa_prefixada_aa" type="number" step="0.01" value="13">
+        <p class="texto-ajuda">
+          É a taxa fixa combinada no momento do investimento.
+          Exemplo: 13% ao ano significa que a simulação considera 13% ao ano até o vencimento.
+        </p>
       </div>
 
       <div id="campos_ipca" class="oculto">
         <label for="taxa_prefixada_aa_ipca">Taxa real anual (%)</label>
         <input id="taxa_prefixada_aa_ipca" type="number" step="0.01" value="6.5">
+        <p class="texto-ajuda">
+          É a parte fixa do rendimento do Tesouro IPCA+.
+          Exemplo: IPCA + 6,5% ao ano.
+        </p>
 
         <label for="ipca_aa">IPCA anual estimado (%)</label>
         <input id="ipca_aa" type="number" step="0.01" value="4.5">
+        <p class="texto-ajuda">
+          O IPCA mede a inflação no Brasil. Ele é usado para estimar quanto os preços devem subir.
+        </p>
       </div>
 
       <div id="campos_ir">
         <label for="ir_percentual">IR personalizado (%) — opcional</label>
         <input id="ir_percentual" type="number" min="0" step="0.1" placeholder="Automático">
+        <p class="texto-ajuda">
+          Deixe vazio para o sistema calcular automaticamente pelo prazo.
+          O IR é o imposto descontado sobre o lucro em investimentos como CDB e Tesouro.
+        </p>
       </div>
 
       <button id="btn_simular">Calcular simulação</button>
+
+      <div id="mensagem" class="mensagem"></div>
     </section>
 
     <section id="resultado" class="card oculto">
@@ -186,6 +222,17 @@
 
     tipo.addEventListener("change", atualizarCampos);
     atualizarCampos();
+
+    function mostrarMensagem(texto, tipoMensagem = "erro") {
+      const mensagem = document.getElementById("mensagem");
+      mensagem.className = `mensagem ${tipoMensagem}`;
+      mensagem.textContent = texto;
+
+      setTimeout(() => {
+        mensagem.className = "mensagem";
+        mensagem.textContent = "";
+      }, 6000);
+    }
 
     function criarGraficoLinha(canvasId, rotulos, datasets, titulo) {
       const ctx = document.getElementById(canvasId);
@@ -400,14 +447,18 @@
         const json = await resposta.json();
 
         if (!json.ok) {
-          alert(json.erro || "Erro ao simular.");
+          mostrarMensagem(
+            json.erro || "Erro ao simular. Verifique os valores informados."
+          );
           return;
         }
 
         mostrarResultado(json.resultado);
 
       } catch (erro) {
-        alert("Não foi possível conectar ao servidor.");
+        mostrarMensagem(
+          "Não foi possível conectar ao servidor. Tente novamente."
+        );
       } finally {
         botao.disabled = false;
         botao.textContent = "Calcular simulação";

@@ -87,6 +87,36 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.texto-ajuda {
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+  color: #5a6875;
+  line-height: 1.4;
+}
+
+.mensagem {
+  display: none;
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.mensagem.erro {
+  display: block;
+  background: #fdecec;
+  color: #a11b1b;
+  border: 1px solid #f5b5b5;
+}
+
+.mensagem.sucesso {
+  display: block;
+  background: #e8f6ef;
+  color: #0b5d3b;
+  border: 1px solid #bfe5d2;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
