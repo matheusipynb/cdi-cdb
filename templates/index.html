@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador de Investimentos</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topo">
+    <h1>💰 Simulador de Investimentos</h1>
+    <p>Compare CDI, CDB, poupança, LCI/LCA e Tesouro IPCA+</p>
+    <small id="status_indicadores">Carregando indicadores do Banco Central...</small>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Dados da simulação</h2>
+
+      <label for="tipo">Tipo de investimento</label>
+      <select id="tipo">
+        <option value="cdb_cdi">CDB pós-fixado (% do CDI)</option>
+        <option value="cdb_prefixado">CDB prefixado</option>
+        <option value="lci_lca">LCI / LCA (% do CDI)</option>
+        <option value="poupanca">Poupança</option>
+        <option value="tesouro_ipca">Tesouro IPCA+</option>
+      </select>
+
+      <label for="valor_inicial">Valor inicial (R$)</label>
+      <input id="valor_inicial" type="number" min="0" step="0.01" value="1000">
+
+      <label for="aporte_mensal">Aporte mensal (R$)</label>
+      <input id="aporte_mensal" type="number" min="0" step="0.01" value="100">
+
+      <label for="meses">Prazo (meses)</label>
+      <input id="meses" type="number" min="1" value="24">
+
+      <div id="campos_cdi">
+        <label for="cdi_aa">CDI anual (%)</label>
+        <input id="cdi_aa" type="number" step="0.01" value="13.65">
+
+        <label for="percentual_cdi">Percentual do CDI (%)</label>
+        <input id="percentual_cdi" type="number" step="0.1" value="100">
+      </div>
+
+      <div id="campos_prefixado" class="oculto">
+        <label for="taxa_prefixada_aa">Taxa prefixada anual (%)</label>
+        <input id="taxa_prefixada_aa" type="number" step="0.01" value="13">
+      </div>
+
+      <div id="campos_ipca" class="oculto">
+        <label for="taxa_prefixada_aa_ipca">Taxa real anual (%)</label>
+        <input id="taxa_prefixada_aa_ipca" type="number" step="0.01" value="6.5">
+
+        <label for="ipca_aa">IPCA anual estimado (%)</label>
+        <input id="ipca_aa" type="number" step="0.01" value="4.5">
+      </div>
+
+      <div id="campos_ir">
+        <label for="ir_percentual">IR personalizado (%) — opcional</label>
+        <input id="ir_percentual" type="number" min="0" step="0.1" placeholder="Automático">
+      </div>
+
+      <button id="btn_simular">Calcular simulação</button>
+    </section>
+
+    <section id="resultado" class="card oculto">
+      <h2 id="nome_investimento"></h2>
+
+      <div class="grid">
+        <div class="indicador">
+          <span>Total investido</span>
+          <strong id="total_aportado"></strong>
+        </div>
+
+        <div class="indicador">
+          <span>Saldo bruto</span>
+          <strong id="saldo_bruto"></strong>
+        </div>
+
+        <div class="indicador">
+          <span>Rendimento bruto</span>
+          <strong id="rendimento_bruto"></strong>
+        </div>
+
+        <div class="indicador">
+          <span>IR</span>
+          <strong id="ir_valor"></strong>
+        </div>
+
+        <div class="indicador destaque">
+          <span>Saldo líquido</span>
+          <strong id="saldo_liquido"></strong>
+        </div>
+
+        <div class="indicador destaque">
+          <span>Rendimento líquido</span>
+          <strong id="rendimento_liquido"></strong>
+        </div>
+      </div>
+
+      <h3>Comparação com a poupança</h3>
+      <p id="comparacao"></p>
+
+      <div class="graficos">
+        <div class="grafico-card">
+          <h3>Crescimento do patrimônio</h3>
+          <div class="grafico-area">
+            <canvas id="graficoPatrimonio"></canvas>
+          </div>
+        </div>
+
+        <div class="grafico-card">
+          <h3>Investimento x Poupança</h3>
+          <div class="grafico-area">
+            <canvas id="graficoComparacao"></canvas>
+          </div>
+        </div>
+
+        <div class="grafico-card">
+          <h3>Indicadores recentes</h3>
+          <div class="grafico-area">
+            <canvas id="graficoIndicadores"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <h3>Evolução mês a mês</h3>
+
+      <div class="tabela-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Mês</th>
+              <th>Investido</th>
+              <th>Saldo bruto</th>
+              <th>Rendimento</th>
+            </tr>
+          </thead>
+          <tbody id="tabela_historico"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
+  <script>
+    const tipo = document.getElementById("tipo");
+    const camposCdi = document.getElementById("campos_cdi");
+    const camposPrefixado = document.getElementById("campos_prefixado");
+    const camposIpca = document.getElementById("campos_ipca");
+    const camposIr = document.getElementById("campos_ir");
+
+    const brl = new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL"
+    });
+
+    let graficoPatrimonio = null;
+    let graficoComparacao = null;
+    let graficoIndicadores = null;
+
+    function atualizarCampos() {
+      const valor = tipo.value;
+
+      camposCdi.classList.toggle(
+        "oculto",
+        !["cdb_cdi", "lci_lca"].includes(valor)
+      );
+
+      camposPrefixado.classList.toggle(
+        "oculto",
+        valor !== "cdb_prefixado"
+      );
+
+      camposIpca.classList.toggle(
+        "oculto",
+        valor !== "tesouro_ipca"
+      );
+
+      camposIr.classList.toggle(
+        "oculto",
+        ["lci_lca", "poupanca"].includes(valor)
+      );
+    }
+
+    tipo.addEventListener("change", atualizarCampos);
+    atualizarCampos();
+
+    function criarGraficoLinha(canvasId, rotulos, datasets, titulo) {
+      const ctx = document.getElementById(canvasId);
+
+      if (Chart.getChart(ctx)) {
+        Chart.getChart(ctx).destroy();
+      }
+
+      return new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: rotulos,
+          datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: "index",
+            intersect: false
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: titulo
+            },
+            tooltip: {
+              callbacks: {
+                label: contexto => {
+                  return `${contexto.dataset.label}: ${brl.format(contexto.parsed.y)}`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              ticks: {
+                callback: valor => brl.format(valor)
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function criarGraficosDaSimulacao(r) {
+      const rotulos = r.historico.map(item => `Mês ${item.mes}`);
+
+      graficoPatrimonio = criarGraficoLinha(
+        "graficoPatrimonio",
+        rotulos,
+        [
+          {
+            label: "Total investido",
+            data: r.historico.map(item => item.aportado),
+            borderColor: "#2563eb",
+            backgroundColor: "rgba(37, 99, 235, 0.15)",
+            fill: true,
+            tension: 0.35
+          },
+          {
+            label: "Saldo bruto",
+            data: r.historico.map(item => item.saldo_bruto),
+            borderColor: "#059669",
+            backgroundColor: "rgba(5, 150, 105, 0.15)",
+            fill: true,
+            tension: 0.35
+          }
+        ],
+        "Evolução do saldo"
+      );
+
+      graficoComparacao = criarGraficoLinha(
+        "graficoComparacao",
+        rotulos,
+        [
+          {
+            label: r.investimento,
+            data: r.historico.map(item => item.saldo_bruto),
+            borderColor: "#059669",
+            backgroundColor: "rgba(5, 150, 105, 0.15)",
+            fill: true,
+            tension: 0.35
+          },
+          {
+            label: "Poupança",
+            data: r.comparacao_poupanca.historico.map(item => item.saldo_bruto),
+            borderColor: "#f59e0b",
+            backgroundColor: "rgba(245, 158, 11, 0.15)",
+            fill: true,
+            tension: 0.35
+          }
+        ],
+        "Comparação com a poupança"
+      );
+    }
+
+    async function carregarIndicadores() {
+      const status = document.getElementById("status_indicadores");
+
+      try {
+        const resposta = await fetch("/api/indicadores");
+        const json = await resposta.json();
+
+        if (!json.ok) {
+          status.textContent = "Não foi possível carregar os indicadores agora.";
+          return;
+        }
+
+        const dados = json.dados.indicadores;
+        const cdi = dados.cdi;
+
+        if (cdi && cdi.atual) {
+          document.getElementById("cdi_aa").value = cdi.atual.toFixed(2);
+          status.textContent = `CDI atual: ${cdi.atual.toFixed(2)}% a.a. — atualizado em ${cdi.data}`;
+        }
+
+        const rotulos = cdi.historico.map(item => item.data);
+        const datasets = [];
+
+        if (cdi.historico.length) {
+          datasets.push({
+            label: "CDI (%)",
+            data: cdi.historico.map(item => item.valor),
+            borderColor: "#0b5d3b",
+            backgroundColor: "rgba(11, 93, 59, 0.15)",
+            fill: true,
+            tension: 0.35
+          });
+        }
+
+        if (dados.selic_meta.historico.length) {
+          datasets.push({
+            label: "Selic meta (%)",
+            data: dados.selic_meta.historico.map(item => item.valor),
+            borderColor: "#2563eb",
+            backgroundColor: "rgba(37, 99, 235, 0.15)",
+            tension: 0.35
+          });
+        }
+
+        if (dados.ipca.historico.length) {
+          datasets.push({
+            label: "IPCA (%)",
+            data: dados.ipca.historico.map(item => item.valor),
+            borderColor: "#dc2626",
+            backgroundColor: "rgba(220, 38, 38, 0.15)",
+            tension: 0.35
+          });
+        }
+
+        const ctx = document.getElementById("graficoIndicadores");
+
+        if (Chart.getChart(ctx)) {
+          Chart.getChart(ctx).destroy();
+        }
+
+        graficoIndicadores = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: rotulos,
+            datasets
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              title: {
+                display: true,
+                text: "Últimos períodos — Banco Central"
+              }
+            }
+          }
+        });
+
+      } catch (erro) {
+        status.textContent = "Erro ao conectar com a API de indicadores.";
+      }
+    }
+
+    document.getElementById("btn_simular").addEventListener("click", async () => {
+      const botao = document.getElementById("btn_simular");
+      botao.disabled = true;
+      botao.textContent = "Calculando...";
+
+      const payload = {
+        tipo: tipo.value,
+        valor_inicial: document.getElementById("valor_inicial").value,
+        aporte_mensal: document.getElementById("aporte_mensal").value,
+        meses: document.getElementById("meses").value,
+        cdi_aa: document.getElementById("cdi_aa").value,
+        percentual_cdi: document.getElementById("percentual_cdi").value,
+        taxa_prefixada_aa:
+          tipo.value === "tesouro_ipca"
+            ? document.getElementById("taxa_prefixada_aa_ipca").value
+            : document.getElementById("taxa_prefixada_aa").value,
+        ipca_aa: document.getElementById("ipca_aa").value,
+        tr_mensal: 0.17,
+        ir_percentual: document.getElementById("ir_percentual").value || 0,
+        usar_cdi_automatico: true
+      };
+
+      try {
+        const resposta = await fetch("/api/simular", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const json = await resposta.json();
+
+        if (!json.ok) {
+          alert(json.erro || "Erro ao simular.");
+          return;
+        }
+
+        mostrarResultado(json.resultado);
+
+      } catch (erro) {
+        alert("Não foi possível conectar ao servidor.");
+      } finally {
+        botao.disabled = false;
+        botao.textContent = "Calcular simulação";
+      }
+    });
+
+    function mostrarResultado(r) {
+      document.getElementById("resultado").classList.remove("oculto");
+      document.getElementById("nome_investimento").textContent = r.investimento;
+
+      document.getElementById("total_aportado").textContent =
+        brl.format(r.total_aportado);
+
+      document.getElementById("saldo_bruto").textContent =
+        brl.format(r.saldo_bruto);
+
+      document.getElementById("rendimento_bruto").textContent =
+        brl.format(r.rendimento_bruto);
+
+      document.getElementById("ir_valor").textContent =
+        brl.format(r.ir_valor);
+
+      document.getElementById("saldo_liquido").textContent =
+        brl.format(r.saldo_liquido);
+
+      document.getElementById("rendimento_liquido").textContent =
+        brl.format(r.rendimento_liquido);
+
+      const diferenca = r.comparacao_poupanca.diferenca_a_favor;
+
+      document.getElementById("comparacao").textContent =
+        diferenca >= 0
+          ? `Este investimento fica ${brl.format(diferenca)} à frente da poupança no prazo escolhido.`
+          : `Este investimento fica ${brl.format(Math.abs(diferenca))} atrás da poupança no prazo escolhido.`;
+
+      const corpo = document.getElementById("tabela_historico");
+      corpo.innerHTML = "";
+
+      r.historico.forEach(item => {
+        const linha = document.createElement("tr");
+
+        linha.innerHTML = `
+          <td>${item.mes}</td>
+          <td>${brl.format(item.aportado)}</td>
+          <td>${brl.format(item.saldo_bruto)}</td>
+          <td>${brl.format(item.rendimento_bruto)}</td>
+        `;
+
+        corpo.appendChild(linha);
+      });
+
+      criarGraficosDaSimulacao(r);
+
+      document.getElementById("resultado").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", carregarIndicadores);
+  </script>
+</body>
+</html>
