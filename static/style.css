@@ -10,30 +10,56 @@ body {
 }
 
 .topo {
-  background: linear-gradient(135deg, #0b5d3b, #12805a);
+  background: linear-gradient(135deg, #062e1f, #0b5d3b);
   color: #fff;
-  padding: 32px 16px;
-  text-align: center;
+  padding: 28px 16px;
+}
+
+.topo-conteudo {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .topo h1 {
-  margin: 0 0 8px;
-  font-size: 1.7rem;
+  margin: 0 0 6px;
+  font-size: 1.6rem;
 }
 
 .topo p {
   margin: 0;
-  opacity: 0.9;
-}
-
-.topo small {
-  display: block;
-  margin-top: 10px;
   opacity: 0.85;
 }
 
+.indicadores-topo {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+}
+
+.chip span {
+  display: block;
+  opacity: 0.8;
+}
+
+.chip strong {
+  font-size: 1rem;
+}
+
 .container {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 24px auto;
   padding: 0 16px;
   display: grid;
@@ -42,9 +68,122 @@ body {
 
 .card {
   background: #fff;
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 20px;
-  box-shadow: 0 8px 24px rgba(15, 35, 60, 0.08);
+  box-shadow: 0 10px 30px rgba(15, 35, 60, 0.08);
+}
+
+.dashboard-topo {
+  margin-bottom: 18px;
+}
+
+.dashboard-topo h2 {
+  margin: 0 0 6px;
+}
+
+.dashboard-topo p {
+  margin: 0;
+  color: #5a6875;
+}
+
+.bancos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+}
+
+.banco-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #e4e9f0;
+  border-radius: 16px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.banco-card:hover {
+  transform: translateY(-2px);
+  border-color: #0b5d3b;
+  box-shadow: 0 10px 20px rgba(11, 93, 59, 0.12);
+}
+
+.banco-card.selecionado {
+  border-color: #0b5d3b;
+  background: #f0faf5;
+  box-shadow: 0 10px 20px rgba(11, 93, 59, 0.14);
+}
+
+.banco-logo {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--cor, #e5e7eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.banco-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+  background: #fff;
+}
+
+.banco-logo span {
+  position: absolute;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.75rem;
+}
+
+.banco-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.banco-info strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.banco-info small {
+  color: #5a6875;
+  font-size: 0.78rem;
+}
+
+.banco-taxa {
+  text-align: right;
+}
+
+.banco-taxa span {
+  display: block;
+  font-size: 0.7rem;
+  color: #5a6875;
+}
+
+.banco-taxa strong {
+  font-size: 0.9rem;
+  color: #0b5d3b;
+}
+
+.aviso {
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #fff8e6;
+  border: 1px solid #f2dc9b;
+  color: #6b5309;
+  font-size: 0.88rem;
 }
 
 label {
@@ -59,9 +198,15 @@ select {
   width: 100%;
   padding: 12px;
   border: 1px solid #d7dee8;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 1rem;
   background: #fbfcfe;
+}
+
+.campos-duplos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
 }
 
 button {
@@ -75,11 +220,6 @@ button {
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-button:hover:not(:disabled) {
-  background: #094a2f;
 }
 
 button:disabled {
@@ -89,7 +229,7 @@ button:disabled {
 
 .texto-ajuda {
   margin: 6px 0 0;
-  font-size: 0.85rem;
+  font-size: 0.83rem;
   color: #5a6875;
   line-height: 1.4;
 }
@@ -99,7 +239,7 @@ button:disabled {
   margin-top: 16px;
   padding: 14px;
   border-radius: 12px;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 600;
 }
 
@@ -119,26 +259,26 @@ button:disabled {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 12px;
   margin-top: 16px;
 }
 
 .indicador {
   background: #f6f8fb;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 14px;
 }
 
 .indicador span {
   display: block;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: #5a6875;
   margin-bottom: 6px;
 }
 
 .indicador strong {
-  font-size: 1.08rem;
+  font-size: 1.05rem;
 }
 
 .destaque {
@@ -204,14 +344,19 @@ th {
   background: #f0f4f9;
 }
 
-@media (min-width: 900px) {
-  .container {
-    grid-template-columns: 380px 1fr;
-    align-items: start;
+@media (min-width: 720px) {
+  .campos-duplos {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .topo h1 {
-    font-size: 2.2rem;
+    font-size: 2rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
   }
 
   .graficos {

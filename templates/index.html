@@ -8,14 +8,48 @@
 </head>
 <body>
   <header class="topo">
-    <h1>💰 Simulador de Investimentos</h1>
-    <p>Compare CDI, CDB, poupança, LCI/LCA e Tesouro IPCA+</p>
-    <small id="status_indicadores">Carregando indicadores do Banco Central...</small>
+    <div class="topo-conteudo">
+      <div>
+        <h1>💰 Simulador de Investimentos</h1>
+        <p>Compare bancos, CDBs, poupança, LCI/LCA e Tesouro</p>
+      </div>
+
+      <div class="indicadores-topo">
+        <div class="chip">
+          <span>CDI</span>
+          <strong id="chip_cdi">--</strong>
+        </div>
+
+        <div class="chip">
+          <span>Selic</span>
+          <strong id="chip_selic">--</strong>
+        </div>
+
+        <div class="chip">
+          <span>IPCA</span>
+          <strong id="chip_ipca">--</strong>
+        </div>
+      </div>
+    </div>
   </header>
 
   <main class="container">
+    <section class="card dashboard">
+      <div class="dashboard-topo">
+        <h2>Escolha onde investir</h2>
+        <p>Toque em um banco para preencher automaticamente a simulação.</p>
+      </div>
+
+      <div id="lista_bancos" class="bancos-grid"></div>
+
+      <div class="aviso">
+        As taxas dos bancos são configuráveis e servem como base para simulação.
+        O CDI, a Selic e o IPCA são atualizados automaticamente pelo Banco Central.
+      </div>
+    </section>
+
     <section class="card">
-      <h2>Dados da simulação</h2>
+      <h2>Personalizar simulação</h2>
 
       <label for="tipo">Tipo de investimento</label>
       <select id="tipo">
@@ -26,63 +60,63 @@
         <option value="tesouro_ipca">Tesouro IPCA+</option>
       </select>
 
-      <label for="valor_inicial">Valor inicial (R$)</label>
-      <input id="valor_inicial" type="number" min="0" step="0.01" value="1000">
-      <p class="texto-ajuda">
-        É o dinheiro que você já tem hoje para começar o investimento.
-      </p>
+      <div class="campos-duplos">
+        <div>
+          <label for="valor_inicial">Valor inicial (R$)</label>
+          <input id="valor_inicial" type="number" min="0" step="0.01" value="1000">
+          <p class="texto-ajuda">Dinheiro que você já tem hoje para investir.</p>
+        </div>
 
-      <label for="aporte_mensal">Aporte mensal (R$)</label>
-      <input id="aporte_mensal" type="number" min="0" step="0.01" value="100">
-      <p class="texto-ajuda">
-        É o valor que você pretende guardar e investir todo mês, além do valor inicial.
-        Exemplo: se você colocar R$ 100, o simulador considera que você adicionará R$ 100 por mês durante todo o prazo.
-      </p>
+        <div>
+          <label for="aporte_mensal">Aporte mensal (R$)</label>
+          <input id="aporte_mensal" type="number" min="0" step="0.01" value="100">
+          <p class="texto-ajuda">Valor que você adiciona todo mês, além do valor inicial.</p>
+        </div>
+      </div>
 
       <label for="meses">Prazo (meses)</label>
       <input id="meses" type="number" min="1" value="24">
-      <p class="texto-ajuda">
-        É por quantos meses o dinheiro ficará investido.
-        Exemplo: 24 meses equivalem a 2 anos.
-      </p>
+      <p class="texto-ajuda">Por quantos meses o dinheiro ficará investido.</p>
 
       <div id="campos_cdi">
-        <label for="cdi_aa">CDI anual (%)</label>
-        <input id="cdi_aa" type="number" step="0.01" value="13.65">
-        <p class="texto-ajuda">
-          O CDI é uma taxa usada como referência para vários investimentos no Brasil.
-          Normalmente, esse campo é preenchido automaticamente.
-        </p>
+        <div class="campos-duplos">
+          <div>
+            <label for="cdi_aa">CDI anual (%)</label>
+            <input id="cdi_aa" type="number" step="0.01" value="13.65">
+          </div>
 
-        <label for="percentual_cdi">Percentual do CDI (%)</label>
-        <input id="percentual_cdi" type="number" step="0.1" value="100">
+          <div>
+            <label for="percentual_cdi">Percentual do CDI (%)</label>
+            <input id="percentual_cdi" type="number" step="0.1" value="100">
+          </div>
+        </div>
+
         <p class="texto-ajuda">
-          Mostra quanto do CDI o investimento paga.
-          Exemplo: 100% do CDI acompanha totalmente o CDI; 90% do CDI paga um pouco menos.
+          Exemplo: 100% do CDI acompanha totalmente o CDI; 90% paga um pouco menos.
         </p>
       </div>
 
       <div id="campos_prefixado" class="oculto">
         <label for="taxa_prefixada_aa">Taxa prefixada anual (%)</label>
         <input id="taxa_prefixada_aa" type="number" step="0.01" value="13">
-        <p class="texto-ajuda">
-          É a taxa fixa combinada no momento do investimento.
-          Exemplo: 13% ao ano significa que a simulação considera 13% ao ano até o vencimento.
-        </p>
+        <p class="texto-ajuda">Taxa fixa combinada no momento do investimento.</p>
       </div>
 
       <div id="campos_ipca" class="oculto">
-        <label for="taxa_prefixada_aa_ipca">Taxa real anual (%)</label>
-        <input id="taxa_prefixada_aa_ipca" type="number" step="0.01" value="6.5">
-        <p class="texto-ajuda">
-          É a parte fixa do rendimento do Tesouro IPCA+.
-          Exemplo: IPCA + 6,5% ao ano.
-        </p>
+        <div class="campos-duplos">
+          <div>
+            <label for="taxa_prefixada_aa_ipca">Taxa real anual (%)</label>
+            <input id="taxa_prefixada_aa_ipca" type="number" step="0.01" value="6.5">
+          </div>
 
-        <label for="ipca_aa">IPCA anual estimado (%)</label>
-        <input id="ipca_aa" type="number" step="0.01" value="4.5">
+          <div>
+            <label for="ipca_aa">IPCA anual estimado (%)</label>
+            <input id="ipca_aa" type="number" step="0.01" value="4.5">
+          </div>
+        </div>
+
         <p class="texto-ajuda">
-          O IPCA mede a inflação no Brasil. Ele é usado para estimar quanto os preços devem subir.
+          O Tesouro IPCA+ rende uma taxa fixa mais a inflação medida pelo IPCA.
         </p>
       </div>
 
@@ -90,8 +124,7 @@
         <label for="ir_percentual">IR personalizado (%) — opcional</label>
         <input id="ir_percentual" type="number" min="0" step="0.1" placeholder="Automático">
         <p class="texto-ajuda">
-          Deixe vazio para o sistema calcular automaticamente pelo prazo.
-          O IR é o imposto descontado sobre o lucro em investimentos como CDB e Tesouro.
+          Deixe vazio para calcular automaticamente conforme o prazo.
         </p>
       </div>
 
@@ -101,7 +134,12 @@
     </section>
 
     <section id="resultado" class="card oculto">
-      <h2 id="nome_investimento"></h2>
+      <div class="resultado-topo">
+        <div>
+          <h2 id="nome_investimento"></h2>
+          <p id="banco_selecionado" class="texto-ajuda"></p>
+        </div>
+      </div>
 
       <div class="grid">
         <div class="indicador">
@@ -134,9 +172,6 @@
           <strong id="rendimento_liquido"></strong>
         </div>
       </div>
-
-      <h3>Comparação com a poupança</h3>
-      <p id="comparacao"></p>
 
       <div class="graficos">
         <div class="grafico-card">
@@ -192,6 +227,7 @@
       currency: "BRL"
     });
 
+    let bancoSelecionado = null;
     let graficoPatrimonio = null;
     let graficoComparacao = null;
     let graficoIndicadores = null;
@@ -232,6 +268,82 @@
         mensagem.className = "mensagem";
         mensagem.textContent = "";
       }, 6000);
+    }
+
+    function criarCardBanco(banco) {
+      const card = document.createElement("button");
+      card.className = "banco-card";
+      card.dataset.banco = banco.id;
+
+      card.innerHTML = `
+        <div class="banco-logo" style="--cor:${banco.cor}">
+          <img src="${banco.logo}" alt="${banco.nome}" onerror="this.style.display='none'">
+          <span>${banco.sigla}</span>
+        </div>
+
+        <div class="banco-info">
+          <strong>${banco.nome}</strong>
+          <small>${banco.produto}</small>
+        </div>
+
+        <div class="banco-taxa">
+          <span>Taxa base</span>
+          <strong>${banco.percentual_cdi ? banco.percentual_cdi + "% do CDI" : "Personalizada"}</strong>
+        </div>
+      `;
+
+      card.addEventListener("click", () => selecionarBanco(banco, card));
+
+      return card;
+    }
+
+    function selecionarBanco(banco, card) {
+      bancoSelecionado = banco.id;
+
+      document.querySelectorAll(".banco-card").forEach(item => {
+        item.classList.remove("selecionado");
+      });
+
+      card.classList.add("selecionado");
+
+      tipo.value = banco.tipo;
+      atualizarCampos();
+
+      if (banco.percentual_cdi) {
+        document.getElementById("percentual_cdi").value = banco.percentual_cdi;
+      }
+
+      if (banco.taxa_prefixada) {
+        document.getElementById("taxa_prefixada_aa").value = banco.taxa_prefixada;
+      }
+
+      if (banco.taxa_real_ipca) {
+        document.getElementById("taxa_prefixada_aa_ipca").value = banco.taxa_real_ipca;
+      }
+
+      mostrarMensagem(
+        `${banco.nome} selecionado. Ajuste os valores e calcule a simulação.`,
+        "sucesso"
+      );
+
+      document.getElementById("btn_simular").click();
+    }
+
+    async function carregarBancos() {
+      const lista = document.getElementById("lista_bancos");
+
+      try {
+        const resposta = await fetch("/api/bancos");
+        const json = await resposta.json();
+
+        if (!json.ok) return;
+
+        lista.innerHTML = "";
+        json.bancos.forEach(banco => lista.appendChild(criarCardBanco(banco)));
+
+      } catch (erro) {
+        lista.innerHTML = "<p class='texto-ajuda'>Não foi possível carregar os bancos.</p>";
+      }
     }
 
     function criarGraficoLinha(canvasId, rotulos, datasets, titulo) {
@@ -331,23 +443,29 @@
     }
 
     async function carregarIndicadores() {
-      const status = document.getElementById("status_indicadores");
-
       try {
         const resposta = await fetch("/api/indicadores");
         const json = await resposta.json();
 
-        if (!json.ok) {
-          status.textContent = "Não foi possível carregar os indicadores agora.";
-          return;
-        }
+        if (!json.ok) return;
 
         const dados = json.dados.indicadores;
         const cdi = dados.cdi;
 
         if (cdi && cdi.atual) {
           document.getElementById("cdi_aa").value = cdi.atual.toFixed(2);
-          status.textContent = `CDI atual: ${cdi.atual.toFixed(2)}% a.a. — atualizado em ${cdi.data}`;
+          document.getElementById("chip_cdi").textContent =
+            cdi.atual.toFixed(2) + "%";
+        }
+
+        if (dados.selic_meta && dados.selic_meta.atual) {
+          document.getElementById("chip_selic").textContent =
+            dados.selic_meta.atual.toFixed(2) + "%";
+        }
+
+        if (dados.ipca && dados.ipca.atual) {
+          document.getElementById("chip_ipca").textContent =
+            dados.ipca.atual.toFixed(2) + "%";
         }
 
         const rotulos = cdi.historico.map(item => item.data);
@@ -409,7 +527,7 @@
         });
 
       } catch (erro) {
-        status.textContent = "Erro ao conectar com a API de indicadores.";
+        console.error(erro);
       }
     }
 
@@ -419,6 +537,7 @@
       botao.textContent = "Calculando...";
 
       const payload = {
+        banco_id: bancoSelecionado,
         tipo: tipo.value,
         valor_inicial: document.getElementById("valor_inicial").value,
         aporte_mensal: document.getElementById("aporte_mensal").value,
@@ -429,6 +548,10 @@
           tipo.value === "tesouro_ipca"
             ? document.getElementById("taxa_prefixada_aa_ipca").value
             : document.getElementById("taxa_prefixada_aa").value,
+        taxa_real_ipca:
+          tipo.value === "tesouro_ipca"
+            ? document.getElementById("taxa_prefixada_aa_ipca").value
+            : 0,
         ipca_aa: document.getElementById("ipca_aa").value,
         tr_mensal: 0.17,
         ir_percentual: document.getElementById("ir_percentual").value || 0,
@@ -468,6 +591,13 @@
     function mostrarResultado(r) {
       document.getElementById("resultado").classList.remove("oculto");
       document.getElementById("nome_investimento").textContent = r.investimento;
+
+      const banco = bancoSelecionado
+        ? bancoSelecionado.replace("_", " ").toUpperCase()
+        : "Simulação personalizada";
+
+      document.getElementById("banco_selecionado").textContent =
+        `Instituição selecionada: ${banco}`;
 
       document.getElementById("total_aportado").textContent =
         brl.format(r.total_aportado);
@@ -518,7 +648,10 @@
       });
     }
 
-    document.addEventListener("DOMContentLoaded", carregarIndicadores);
+    document.addEventListener("DOMContentLoaded", () => {
+      carregarBancos();
+      carregarIndicadores();
+    });
   </script>
 </body>
 </html>
