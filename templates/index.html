@@ -37,10 +37,33 @@
     <section class="card dashboard">
       <div class="dashboard-topo">
         <h2>Escolha onde investir</h2>
-        <p>Toque em um banco para preencher automaticamente a simulação.</p>
+        <p>Toque em um banco para ver os investimentos disponíveis.</p>
       </div>
 
       <div id="lista_bancos" class="bancos-grid"></div>
+
+      <div id="detalhes_banco" class="detalhes-banco oculto">
+        <div class="detalhes-topo">
+          <div class="detalhes-banco-info">
+            <div class="banco-logo" id="detalhe_logo">
+              <img id="detalhe_img" src="" alt="">
+              <span class="banco-sigla" id="detalhe_sigla"></span>
+            </div>
+
+            <div>
+              <h3 id="detalhe_nome"></h3>
+              <p id="detalhe_descricao" class="texto-ajuda"></p>
+            </div>
+          </div>
+
+          <a id="detalhe_site" class="botao-site" target="_blank" rel="noopener">
+            Abrir site oficial
+          </a>
+        </div>
+
+        <h4>Investimentos oferecidos</h4>
+        <div id="lista_produtos" class="produtos-grid"></div>
+      </div>
 
       <div class="aviso">
         As taxas dos bancos são configuráveis e servem como base para simulação.
@@ -277,56 +300,133 @@
 
       card.innerHTML = `
         <div class="banco-logo" style="--cor:${banco.cor}">
-          <img src="${banco.logo}" alt="${banco.nome}" onerror="this.style.display='none'">
-          <span>${banco.sigla}</span>
+          <img
+            src="${banco.logo}"
+            alt="${banco.nome}"
+            onload="this.parentElement.classList.add('com-logo')"
+            onerror="this.remove()"
+          >
+          <span class="banco-sigla">${banco.sigla}</span>
         </div>
 
         <div class="banco-info">
           <strong>${banco.nome}</strong>
-          <small>${banco.produto}</small>
+          <small>${banco.produtos.length} opções de investimento</small>
         </div>
 
         <div class="banco-taxa">
-          <span>Taxa base</span>
-          <strong>${banco.percentual_cdi ? banco.percentual_cdi + "% do CDI" : "Personalizada"}</strong>
+          <span>Ver ofertas</span>
+          <strong>→</strong>
         </div>
       `;
 
-      card.addEventListener("click", () => selecionarBanco(banco, card));
+      card.addEventListener("click", () => abrirDetalhesBanco(banco.id));
 
       return card;
     }
 
-    function selecionarBanco(banco, card) {
-      bancoSelecionado = banco.id;
+    async function abrirDetalhesBanco(bancoId) {
+      bancoSelecionado = bancoId;
 
       document.querySelectorAll(".banco-card").forEach(item => {
-        item.classList.remove("selecionado");
+        item.classList.toggle(
+          "selecionado",
+          item.dataset.banco === bancoId
+        );
       });
 
-      card.classList.add("selecionado");
+      const painel = document.getElementById("detalhes_banco");
+      painel.classList.remove("oculto");
 
-      tipo.value = banco.tipo;
+      try {
+        const resposta = await fetch(`/api/bancos/${bancoId}`);
+        const json = await resposta.json();
+
+        if (!json.ok) {
+          mostrarMensagem(json.erro || "Não foi possível carregar o banco.");
+          return;
+        }
+
+        const banco = json.banco;
+
+        document.getElementById("detalhe_nome").textContent = banco.nome;
+        document.getElementById("detalhe_site").href = banco.site;
+        document.getElementById("detalhe_sigla").textContent = banco.sigla;
+
+        const logo = document.getElementById("detalhe_logo");
+        logo.style.setProperty("--cor", banco.cor);
+        logo.classList.remove("com-logo");
+
+        const imagem = document.getElementById("detalhe_img");
+        imagem.src = banco.logo;
+        imagem.onload = () => logo.classList.add("com-logo");
+        imagem.onerror = () => imagem.remove();
+
+        document.getElementById("detalhe_descricao").textContent =
+          "Escolha um investimento abaixo para simular automaticamente.";
+
+        const lista = document.getElementById("lista_produtos");
+        lista.innerHTML = "";
+
+        banco.produtos.forEach(produto => {
+          const item = document.createElement("button");
+          item.className = "produto-card";
+
+          const taxa = produto.percentual_cdi
+            ? `${produto.percentual_cdi}% do CDI`
+            : produto.taxa_prefixada
+              ? `${produto.taxa_prefixada}% a.a.`
+              : "Consultar condições";
+
+          item.innerHTML = `
+            <div>
+              <strong>${produto.nome}</strong>
+              <p>${produto.descricao}</p>
+            </div>
+
+            <div class="produto-taxa">
+              <span>Rentabilidade base</span>
+              <strong>${taxa}</strong>
+            </div>
+          `;
+
+          item.addEventListener("click", () => selecionarProduto(banco, produto));
+
+          lista.appendChild(item);
+        });
+
+        painel.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+
+      } catch (erro) {
+        mostrarMensagem("Não foi possível carregar os investimentos deste banco.");
+      }
+    }
+
+    function selecionarProduto(banco, produto) {
+      tipo.value = produto.tipo;
       atualizarCampos();
 
-      if (banco.percentual_cdi) {
-        document.getElementById("percentual_cdi").value = banco.percentual_cdi;
+      if (produto.percentual_cdi) {
+        document.getElementById("percentual_cdi").value = produto.percentual_cdi;
       }
 
-      if (banco.taxa_prefixada) {
-        document.getElementById("taxa_prefixada_aa").value = banco.taxa_prefixada;
+      if (produto.taxa_prefixada) {
+        document.getElementById("taxa_prefixada_aa").value = produto.taxa_prefixada;
       }
 
-      if (banco.taxa_real_ipca) {
-        document.getElementById("taxa_prefixada_aa_ipca").value = banco.taxa_real_ipca;
+      if (produto.taxa_real_ipca) {
+        document.getElementById("taxa_prefixada_aa_ipca").value = produto.taxa_real_ipca;
       }
 
       mostrarMensagem(
-        `${banco.nome} selecionado. Ajuste os valores e calcule a simulação.`,
+        `${produto.nome} selecionado no ${banco.nome}.`,
         "sucesso"
       );
 
-      document.getElementById("btn_simular").click();
+      calcularSimulacao();
     }
 
     async function carregarBancos() {
@@ -531,7 +631,7 @@
       }
     }
 
-    document.getElementById("btn_simular").addEventListener("click", async () => {
+    async function calcularSimulacao() {
       const botao = document.getElementById("btn_simular");
       botao.disabled = true;
       botao.textContent = "Calculando...";
@@ -548,10 +648,6 @@
           tipo.value === "tesouro_ipca"
             ? document.getElementById("taxa_prefixada_aa_ipca").value
             : document.getElementById("taxa_prefixada_aa").value,
-        taxa_real_ipca:
-          tipo.value === "tesouro_ipca"
-            ? document.getElementById("taxa_prefixada_aa_ipca").value
-            : 0,
         ipca_aa: document.getElementById("ipca_aa").value,
         tr_mensal: 0.17,
         ir_percentual: document.getElementById("ir_percentual").value || 0,
@@ -586,7 +682,7 @@
         botao.disabled = false;
         botao.textContent = "Calcular simulação";
       }
-    });
+    }
 
     function mostrarResultado(r) {
       document.getElementById("resultado").classList.remove("oculto");
@@ -647,6 +743,8 @@
         block: "start"
       });
     }
+
+    document.getElementById("btn_simular").addEventListener("click", calcularSimulacao);
 
     document.addEventListener("DOMContentLoaded", () => {
       carregarBancos();

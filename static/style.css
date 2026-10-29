@@ -88,7 +88,7 @@ body {
 
 .bancos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 14px;
 }
 
@@ -120,8 +120,8 @@ body {
 
 .banco-logo {
   position: relative;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 14px;
   background: var(--cor, #e5e7eb);
   display: flex;
@@ -132,18 +132,28 @@ body {
 }
 
 .banco-logo img {
+  display: none;
   width: 100%;
   height: 100%;
   object-fit: contain;
   padding: 6px;
   background: #fff;
+  z-index: 2;
 }
 
-.banco-logo span {
-  position: absolute;
+.banco-logo.com-logo img {
+  display: block;
+}
+
+.banco-sigla {
   color: #fff;
   font-weight: 800;
   font-size: 0.75rem;
+  z-index: 1;
+}
+
+.banco-logo.com-logo .banco-sigla {
+  display: none;
 }
 
 .banco-info {
@@ -173,6 +183,95 @@ body {
 
 .banco-taxa strong {
   font-size: 0.9rem;
+  color: #0b5d3b;
+}
+
+.detalhes-banco {
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px solid #e4e9f0;
+  border-radius: 18px;
+  background: #fbfcfe;
+}
+
+.detalhes-topo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.detalhes-banco-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.detalhes-banco-info h3 {
+  margin: 0;
+}
+
+.botao-site {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #0b5d3b;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.produtos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.produto-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #e4e9f0;
+  border-radius: 14px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.produto-card:hover {
+  border-color: #0b5d3b;
+  transform: translateY(-2px);
+}
+
+.produto-card strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.produto-card p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #5a6875;
+}
+
+.produto-taxa {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.produto-taxa span {
+  display: block;
+  font-size: 0.7rem;
+  color: #5a6875;
+}
+
+.produto-taxa strong {
   color: #0b5d3b;
 }
 
