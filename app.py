@@ -28,6 +28,22 @@ def api_bancos():
     })
 
 
+@app.route("/api/bancos/<banco_id>")
+def api_detalhes_banco(banco_id):
+    banco = obter_banco_por_id(banco_id)
+
+    if not banco:
+        return jsonify({
+            "ok": False,
+            "erro": "Banco não encontrado."
+        }), 404
+
+    return jsonify({
+        "ok": True,
+        "banco": banco
+    })
+
+
 @app.route("/api/simular", methods=["POST"])
 def api_simular():
     dados = request.get_json(silent=True) or {}
@@ -36,7 +52,6 @@ def api_simular():
         cdi_aa = float(dados.get("cdi_aa", 13.65))
         percentual_cdi = float(dados.get("percentual_cdi", 100))
         taxa_prefixada_aa = float(dados.get("taxa_prefixada_aa", 0))
-        taxa_real_ipca = float(dados.get("taxa_real_ipca", 0))
 
         banco_id = dados.get("banco_id")
 
@@ -44,9 +59,11 @@ def api_simular():
             banco = obter_banco_por_id(banco_id)
 
             if banco:
-                percentual_cdi = banco.get("percentual_cdi") or percentual_cdi
-                taxa_prefixada_aa = banco.get("taxa_prefixada") or taxa_prefixada_aa
-                taxa_real_ipca = banco.get("taxa_real_ipca") or taxa_real_ipca
+                if banco.get("percentual_cdi"):
+                    percentual_cdi = banco["percentual_cdi"]
+
+                if banco.get("taxa_prefixada"):
+                    taxa_prefixada_aa = banco["taxa_prefixada"]
 
         if dados.get("usar_cdi_automatico"):
             indicadores = obter_indicadores()

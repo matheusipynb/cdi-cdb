@@ -1,7 +1,8 @@
 BANCOS = [
     {
         "id": "caixa",
-        "nome": "Caixa",
+        "nome": "Caixa Econômica Federal",
+        "nome_curto": "Caixa",
         "logo": "/static/img/caixa.png",
         "cor": "#0070af",
         "sigla": "CX",
@@ -9,36 +10,43 @@ BANCOS = [
         "produtos": [
             {
                 "id": "caixa_cdb_cdi",
-                "nome": "CDB Caixa pós-fixado",
+                "nome": "CDB pós-fixado",
                 "tipo": "cdb_cdi",
                 "percentual_cdi": 100,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": None,
-                "descricao": "CDB que acompanha o CDI. O rendimento depende da variação do CDI até o vencimento."
+                "risco": "Baixo",
+                "liquidez": "Conforme vencimento",
+                "descricao": "CDB que acompanha o CDI. O rendimento varia conforme a taxa durante o período."
             },
             {
                 "id": "caixa_poupanca",
-                "nome": "Poupança Caixa",
+                "nome": "Poupança",
                 "tipo": "poupanca",
                 "percentual_cdi": None,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": None,
-                "descricao": "Investimento simples e líquido, sem IR sobre o rendimento."
+                "risco": "Baixo",
+                "liquidez": "Diária",
+                "descricao": "Opção simples e de baixo risco, com rendimento geralmente menor que bons CDBs."
             },
             {
-                "id": "caixa_tesouro",
-                "nome": "Tesouro Direto via Caixa",
+                "id": "caixa_tesouro_ipca",
+                "nome": "Tesouro IPCA+",
                 "tipo": "tesouro_ipca",
                 "percentual_cdi": None,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": 6.5,
-                "descricao": "Títulos públicos comprados pela Caixa. Pode ser IPCA+ ou prefixado."
+                "risco": "Baixo",
+                "liquidez": "D+1 após vencimento",
+                "descricao": "Título público que protege o poder de compra: rende uma taxa fixa mais a inflação."
             }
         ]
     },
     {
         "id": "mercado_pago",
         "nome": "Mercado Pago",
+        "nome_curto": "Mercado Pago",
         "logo": "/static/img/mercado-pago.png",
         "cor": "#00a650",
         "sigla": "MP",
@@ -46,27 +54,32 @@ BANCOS = [
         "produtos": [
             {
                 "id": "mp_cdb_cdi",
-                "nome": "Rendimento do Mercado Pago",
+                "nome": "Rendimento do saldo",
                 "tipo": "cdb_cdi",
                 "percentual_cdi": 100,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": None,
-                "descricao": "Saldo remunerado vinculado a produtos de renda fixa. Confira as condições no aplicativo."
+                "risco": "Baixo",
+                "liquidez": "Diária",
+                "descricao": "Rendimento vinculado a produtos de renda fixa. Confira as regras no aplicativo."
             },
             {
                 "id": "mp_cdb_prefixado",
-                "nome": "CDB Mercado Pago prefixado",
+                "nome": "CDB prefixado",
                 "tipo": "cdb_prefixado",
                 "percentual_cdi": None,
                 "taxa_prefixada": 13,
                 "taxa_real_ipca": None,
-                "descricao": "CDB com taxa fixa definida no momento da aplicação."
+                "risco": "Baixo",
+                "liquidez": "Conforme vencimento",
+                "descricao": "CDB com taxa fixa combinada na contratação."
             }
         ]
     },
     {
         "id": "nubank",
         "nome": "Nubank",
+        "nome_curto": "Nubank",
         "logo": "/static/img/nubank.png",
         "cor": "#820ad1",
         "sigla": "NU",
@@ -74,27 +87,32 @@ BANCOS = [
         "produtos": [
             {
                 "id": "nu_cdb_cdi",
-                "nome": "CDB Nubank pós-fixado",
+                "nome": "CDB pós-fixado",
                 "tipo": "cdb_cdi",
                 "percentual_cdi": 100,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": None,
-                "descricao": "CDB que acompanha o CDI."
+                "risco": "Baixo",
+                "liquidez": "Conforme vencimento",
+                "descricao": "CDB vinculado ao CDI, indicado para reserva ou objetivos de médio prazo."
             },
             {
                 "id": "nu_caixinhas",
-                "nome": "Caixinhas do Nubank",
+                "nome": "Caixinhas",
                 "tipo": "cdb_cdi",
                 "percentual_cdi": 100,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": None,
-                "descricao": "Opções de reserva e objetivos com rendimento vinculado ao CDI."
+                "risco": "Baixo",
+                "liquidez": "Varia por caixinha",
+                "descricao": "Opções para organizar dinheiro por objetivo, com rendimento geralmente atrelado ao CDI."
             }
         ]
     },
     {
         "id": "inter",
         "nome": "Banco Inter",
+        "nome_curto": "Inter",
         "logo": "/static/img/inter.png",
         "cor": "#ff7a00",
         "sigla": "IN",
@@ -102,27 +120,32 @@ BANCOS = [
         "produtos": [
             {
                 "id": "inter_cdb_cdi",
-                "nome": "CDB Inter pós-fixado",
+                "nome": "CDB pós-fixado",
                 "tipo": "cdb_cdi",
                 "percentual_cdi": 100,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": None,
+                "risco": "Baixo",
+                "liquidez": "Conforme vencimento",
                 "descricao": "CDB vinculado ao CDI."
             },
             {
                 "id": "inter_lci",
-                "nome": "LCI Inter",
+                "nome": "LCI",
                 "tipo": "lci_lca",
                 "percentual_cdi": 90,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": None,
-                "descricao": "Letra de Crédito Imobiliário. Geralmente é isenta de IR para pessoa física."
+                "risco": "Baixo",
+                "liquidez": "Conforme carência",
+                "descricao": "Letra de Crédito Imobiliário, geralmente isenta de Imposto de Renda para pessoa física."
             }
         ]
     },
     {
         "id": "btg",
         "nome": "BTG Pactual",
+        "nome_curto": "BTG",
         "logo": "/static/img/btg.png",
         "cor": "#111827",
         "sigla": "BTG",
@@ -130,27 +153,32 @@ BANCOS = [
         "produtos": [
             {
                 "id": "btg_cdb_cdi",
-                "nome": "CDB BTG pós-fixado",
+                "nome": "CDB pós-fixado",
                 "tipo": "cdb_cdi",
                 "percentual_cdi": 100,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": None,
+                "risco": "Baixo",
+                "liquidez": "Conforme vencimento",
                 "descricao": "CDB vinculado ao CDI."
             },
             {
-                "id": "btg_tesouro",
-                "nome": "Tesouro Direto via BTG",
+                "id": "btg_tesouro_ipca",
+                "nome": "Tesouro IPCA+",
                 "tipo": "tesouro_ipca",
                 "percentual_cdi": None,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": 6.5,
-                "descricao": "Investimento em títulos públicos federais."
+                "risco": "Baixo",
+                "liquidez": "D+1 após vencimento",
+                "descricao": "Título público que combina taxa fixa com variação do IPCA."
             }
         ]
     },
     {
         "id": "itau",
-        "nome": "Itaú",
+        "nome": "Itaú Unibanco",
+        "nome_curto": "Itaú",
         "logo": "/static/img/itau.png",
         "cor": "#ec7000",
         "sigla": "IT",
@@ -158,27 +186,32 @@ BANCOS = [
         "produtos": [
             {
                 "id": "itau_cdb_cdi",
-                "nome": "CDB Itaú pós-fixado",
+                "nome": "CDB pós-fixado",
                 "tipo": "cdb_cdi",
                 "percentual_cdi": 100,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": None,
+                "risco": "Baixo",
+                "liquidez": "Conforme vencimento",
                 "descricao": "CDB vinculado ao CDI."
             },
             {
                 "id": "itau_fundos",
-                "nome": "Fundos de investimento Itaú",
+                "nome": "Fundos de investimento",
                 "tipo": "cdb_cdi",
                 "percentual_cdi": 95,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": None,
-                "descricao": "Fundos com diferentes níveis de risco e rentabilidade."
+                "risco": "Baixo a moderado",
+                "liquidez": "Varia por fundo",
+                "descricao": "Fundos com diferentes perfis de risco, prazo e rentabilidade."
             }
         ]
     },
     {
         "id": "bradesco",
         "nome": "Bradesco",
+        "nome_curto": "Bradesco",
         "logo": "/static/img/bradesco.png",
         "cor": "#cc092f",
         "sigla": "BR",
@@ -186,20 +219,24 @@ BANCOS = [
         "produtos": [
             {
                 "id": "bradesco_cdb_cdi",
-                "nome": "CDB Bradesco pós-fixado",
+                "nome": "CDB pós-fixado",
                 "tipo": "cdb_cdi",
                 "percentual_cdi": 100,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": None,
+                "risco": "Baixo",
+                "liquidez": "Conforme vencimento",
                 "descricao": "CDB vinculado ao CDI."
             },
             {
                 "id": "bradesco_poupanca",
-                "nome": "Poupança Bradesco",
+                "nome": "Poupança",
                 "tipo": "poupanca",
                 "percentual_cdi": None,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": None,
+                "risco": "Baixo",
+                "liquidez": "Diária",
                 "descricao": "Poupança tradicional, com liquidez diária."
             }
         ]
@@ -207,6 +244,7 @@ BANCOS = [
     {
         "id": "santander",
         "nome": "Santander",
+        "nome_curto": "Santander",
         "logo": "/static/img/santander.png",
         "cor": "#ec0000",
         "sigla": "SAN",
@@ -214,20 +252,24 @@ BANCOS = [
         "produtos": [
             {
                 "id": "santander_cdb_cdi",
-                "nome": "CDB Santander pós-fixado",
+                "nome": "CDB pós-fixado",
                 "tipo": "cdb_cdi",
                 "percentual_cdi": 100,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": None,
+                "risco": "Baixo",
+                "liquidez": "Conforme vencimento",
                 "descricao": "CDB vinculado ao CDI."
             },
             {
                 "id": "santander_lca",
-                "nome": "LCA Santander",
+                "nome": "LCA",
                 "tipo": "lci_lca",
                 "percentual_cdi": 90,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": None,
+                "risco": "Baixo",
+                "liquidez": "Conforme carência",
                 "descricao": "Letra de Crédito do Agronegócio, normalmente isenta de IR."
             }
         ]
@@ -235,6 +277,7 @@ BANCOS = [
     {
         "id": "banco_brasil",
         "nome": "Banco do Brasil",
+        "nome_curto": "Banco do Brasil",
         "logo": "/static/img/banco-brasil.png",
         "cor": "#f7c400",
         "sigla": "BB",
@@ -242,27 +285,32 @@ BANCOS = [
         "produtos": [
             {
                 "id": "bb_cdb_cdi",
-                "nome": "CDB Banco do Brasil",
+                "nome": "CDB pós-fixado",
                 "tipo": "cdb_cdi",
                 "percentual_cdi": 100,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": None,
+                "risco": "Baixo",
+                "liquidez": "Conforme vencimento",
                 "descricao": "CDB vinculado ao CDI."
             },
             {
-                "id": "bb_tesouro",
-                "nome": "Tesouro Direto via BB",
+                "id": "bb_tesouro_ipca",
+                "nome": "Tesouro IPCA+",
                 "tipo": "tesouro_ipca",
                 "percentual_cdi": None,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": 6.5,
-                "descricao": "Investimento em títulos públicos federais."
+                "risco": "Baixo",
+                "liquidez": "D+1 após vencimento",
+                "descricao": "Título público que protege contra a inflação."
             }
         ]
     },
     {
         "id": "c6",
         "nome": "C6 Bank",
+        "nome_curto": "C6",
         "logo": "/static/img/c6.png",
         "cor": "#242424",
         "sigla": "C6",
@@ -270,21 +318,25 @@ BANCOS = [
         "produtos": [
             {
                 "id": "c6_cdb_cdi",
-                "nome": "CDB C6 pós-fixado",
+                "nome": "CDB pós-fixado",
                 "tipo": "cdb_cdi",
                 "percentual_cdi": 100,
                 "taxa_prefixada": None,
                 "taxa_real_ipca": None,
+                "risco": "Baixo",
+                "liquidez": "Conforme vencimento",
                 "descricao": "CDB vinculado ao CDI."
             },
             {
                 "id": "c6_cdb_prefixado",
-                "nome": "CDB C6 prefixado",
+                "nome": "CDB prefixado",
                 "tipo": "cdb_prefixado",
                 "percentual_cdi": None,
                 "taxa_prefixada": 13,
                 "taxa_real_ipca": None,
-                "descricao": "CDB com rentabilidade fixa combinada na contratação."
+                "risco": "Baixo",
+                "liquidez": "Conforme vencimento",
+                "descricao": "CDB com rentabilidade fixa definida na contratação."
             }
         ]
     }

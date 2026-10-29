@@ -3,15 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simulador de Investimentos</title>
+  <title>Simulador de Investimentos | Compare bancos e rentabilidade</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
   <header class="topo">
     <div class="topo-conteudo">
-      <div>
-        <h1>💰 Simulador de Investimentos</h1>
-        <p>Compare bancos, CDBs, poupança, LCI/LCA e Tesouro</p>
+      <div class="marca">
+        <div class="marca-icone">📈</div>
+        <div>
+          <h1>Simulador de Investimentos</h1>
+          <p>Compare rentabilidade, prazos e instituições financeiras</p>
+        </div>
       </div>
 
       <div class="indicadores-topo">
@@ -34,107 +37,104 @@
   </header>
 
   <main class="container">
-    <section class="card dashboard">
-      <div class="dashboard-topo">
-        <h2>Escolha onde investir</h2>
-        <p>Toque em um banco para ver os investimentos disponíveis.</p>
+    <section class="card formulario">
+      <div class="cabecalho-secao">
+        <h2>Fazer simulação</h2>
+        <p>Escolha o banco, o tipo de investimento e informe seus valores.</p>
       </div>
 
-      <div id="lista_bancos" class="bancos-grid"></div>
-
-      <div id="detalhes_banco" class="detalhes-banco oculto">
-        <div class="detalhes-topo">
-          <div class="detalhes-banco-info">
-            <div class="banco-logo" id="detalhe_logo">
-              <img id="detalhe_img" src="" alt="">
-              <span class="banco-sigla" id="detalhe_sigla"></span>
-            </div>
-
-            <div>
-              <h3 id="detalhe_nome"></h3>
-              <p id="detalhe_descricao" class="texto-ajuda"></p>
-            </div>
-          </div>
-
-          <a id="detalhe_site" class="botao-site" target="_blank" rel="noopener">
-            Abrir site oficial
-          </a>
-        </div>
-
-        <h4>Investimentos oferecidos</h4>
-        <div id="lista_produtos" class="produtos-grid"></div>
-      </div>
-
-      <div class="aviso">
-        As taxas dos bancos são configuráveis e servem como base para simulação.
-        O CDI, a Selic e o IPCA são atualizados automaticamente pelo Banco Central.
-      </div>
-    </section>
-
-    <section class="card">
-      <h2>Personalizar simulação</h2>
-
-      <label for="tipo">Tipo de investimento</label>
-      <select id="tipo">
-        <option value="cdb_cdi">CDB pós-fixado (% do CDI)</option>
-        <option value="cdb_prefixado">CDB prefixado</option>
-        <option value="lci_lca">LCI / LCA (% do CDI)</option>
-        <option value="poupanca">Poupança</option>
-        <option value="tesouro_ipca">Tesouro IPCA+</option>
+      <label for="banco">Banco ou instituição</label>
+      <select id="banco">
+        <option value="">Selecione um banco</option>
       </select>
+      <p class="texto-ajuda">
+        Escolha a instituição onde você investe ou pretende investir.
+      </p>
+
+      <label for="produto">Investimento</label>
+      <select id="produto">
+        <option value="">Selecione um banco primeiro</option>
+      </select>
+      <p class="texto-ajuda" id="descricao_produto">
+        Ao escolher um investimento, o simulador explica como ele funciona.
+      </p>
 
       <div class="campos-duplos">
         <div>
-          <label for="valor_inicial">Valor inicial (R$)</label>
-          <input id="valor_inicial" type="number" min="0" step="0.01" value="1000">
+          <label for="valor_inicial">Valor inicial</label>
+          <div class="campo-moeda">
+            <span>R$</span>
+            <input id="valor_inicial" type="number" min="0" step="0.01" value="1000">
+          </div>
           <p class="texto-ajuda">Dinheiro que você já tem hoje para investir.</p>
         </div>
 
         <div>
-          <label for="aporte_mensal">Aporte mensal (R$)</label>
-          <input id="aporte_mensal" type="number" min="0" step="0.01" value="100">
+          <label for="aporte_mensal">Aporte mensal</label>
+          <div class="campo-moeda">
+            <span>R$</span>
+            <input id="aporte_mensal" type="number" min="0" step="0.01" value="100">
+          </div>
           <p class="texto-ajuda">Valor que você adiciona todo mês, além do valor inicial.</p>
         </div>
       </div>
 
-      <label for="meses">Prazo (meses)</label>
-      <input id="meses" type="number" min="1" value="24">
-      <p class="texto-ajuda">Por quantos meses o dinheiro ficará investido.</p>
+      <label for="meses">Prazo</label>
+      <div class="campo-prazo">
+        <input id="meses" type="number" min="1" value="24">
+        <span>meses</span>
+      </div>
+      <p class="texto-ajuda">Exemplo: 24 meses equivalem a 2 anos.</p>
 
       <div id="campos_cdi">
         <div class="campos-duplos">
           <div>
-            <label for="cdi_aa">CDI anual (%)</label>
-            <input id="cdi_aa" type="number" step="0.01" value="13.65">
+            <label for="cdi_aa">CDI anual</label>
+            <div class="campo-percentual">
+              <input id="cdi_aa" type="number" step="0.01" value="13.65">
+              <span>%</span>
+            </div>
           </div>
 
           <div>
-            <label for="percentual_cdi">Percentual do CDI (%)</label>
-            <input id="percentual_cdi" type="number" step="0.1" value="100">
+            <label for="percentual_cdi">Percentual do CDI</label>
+            <div class="campo-percentual">
+              <input id="percentual_cdi" type="number" step="0.1" value="100">
+              <span>%</span>
+            </div>
           </div>
         </div>
 
         <p class="texto-ajuda">
-          Exemplo: 100% do CDI acompanha totalmente o CDI; 90% paga um pouco menos.
+          Exemplo: um CDB de 100% do CDI acompanha totalmente o CDI.
         </p>
       </div>
 
       <div id="campos_prefixado" class="oculto">
-        <label for="taxa_prefixada_aa">Taxa prefixada anual (%)</label>
-        <input id="taxa_prefixada_aa" type="number" step="0.01" value="13">
+        <label for="taxa_prefixada_aa">Taxa prefixada anual</label>
+        <div class="campo-percentual">
+          <input id="taxa_prefixada_aa" type="number" step="0.01" value="13">
+          <span>%</span>
+        </div>
         <p class="texto-ajuda">Taxa fixa combinada no momento do investimento.</p>
       </div>
 
       <div id="campos_ipca" class="oculto">
         <div class="campos-duplos">
           <div>
-            <label for="taxa_prefixada_aa_ipca">Taxa real anual (%)</label>
-            <input id="taxa_prefixada_aa_ipca" type="number" step="0.01" value="6.5">
+            <label for="taxa_prefixada_aa_ipca">Taxa real anual</label>
+            <div class="campo-percentual">
+              <input id="taxa_prefixada_aa_ipca" type="number" step="0.01" value="6.5">
+              <span>%</span>
+            </div>
           </div>
 
           <div>
-            <label for="ipca_aa">IPCA anual estimado (%)</label>
-            <input id="ipca_aa" type="number" step="0.01" value="4.5">
+            <label for="ipca_aa">IPCA estimado</label>
+            <div class="campo-percentual">
+              <input id="ipca_aa" type="number" step="0.01" value="4.5">
+              <span>%</span>
+            </div>
           </div>
         </div>
 
@@ -144,102 +144,128 @@
       </div>
 
       <div id="campos_ir">
-        <label for="ir_percentual">IR personalizado (%) — opcional</label>
-        <input id="ir_percentual" type="number" min="0" step="0.1" placeholder="Automático">
+        <label for="ir_percentual">Imposto de Renda personalizado</label>
+        <div class="campo-percentual">
+          <input id="ir_percentual" type="number" min="0" step="0.1" placeholder="Automático">
+          <span>%</span>
+        </div>
         <p class="texto-ajuda">
-          Deixe vazio para calcular automaticamente conforme o prazo.
+          Deixe vazio para o sistema calcular automaticamente pelo prazo.
         </p>
       </div>
 
-      <button id="btn_simular">Calcular simulação</button>
+      <button id="btn_simular" class="botao-principal">
+        Calcular simulação
+      </button>
 
       <div id="mensagem" class="mensagem"></div>
     </section>
 
-    <section id="resultado" class="card oculto">
-      <div class="resultado-topo">
-        <div>
-          <h2 id="nome_investimento"></h2>
-          <p id="banco_selecionado" class="texto-ajuda"></p>
+    <section id="resultado" class="card resultado oculto">
+      <div class="cabecalho-secao">
+        <h2 id="nome_investimento">Resultado da simulação</h2>
+        <p id="banco_selecionado" class="texto-ajuda"></p>
+      </div>
+
+      <div class="destaques">
+        <div class="destaque principal">
+          <span>Saldo líquido estimado</span>
+          <strong id="saldo_liquido">R$ 0,00</strong>
+          <small id="prazo_texto"></small>
+        </div>
+
+        <div class="destaque">
+          <span>Total investido</span>
+          <strong id="total_aportado">R$ 0,00</strong>
+        </div>
+
+        <div class="destaque">
+          <span>Rendimento líquido</span>
+          <strong id="rendimento_liquido">R$ 0,00</strong>
+        </div>
+
+        <div class="destaque">
+          <span>Imposto de Renda</span>
+          <strong id="ir_valor">R$ 0,00</strong>
         </div>
       </div>
 
-      <div class="grid">
-        <div class="indicador">
-          <span>Total investido</span>
-          <strong id="total_aportado"></strong>
+      <div class="painel-comparacao">
+        <div>
+          <h3>Comparação com a poupança</h3>
+          <p id="comparacao"></p>
         </div>
 
-        <div class="indicador">
-          <span>Saldo bruto</span>
-          <strong id="saldo_bruto"></strong>
-        </div>
-
-        <div class="indicador">
-          <span>Rendimento bruto</span>
-          <strong id="rendimento_bruto"></strong>
-        </div>
-
-        <div class="indicador">
-          <span>IR</span>
-          <strong id="ir_valor"></strong>
-        </div>
-
-        <div class="indicador destaque">
-          <span>Saldo líquido</span>
-          <strong id="saldo_liquido"></strong>
-        </div>
-
-        <div class="indicador destaque">
-          <span>Rendimento líquido</span>
-          <strong id="rendimento_liquido"></strong>
+        <div class="diferenca">
+          <span>Diferença</span>
+          <strong id="diferenca_poupanca">R$ 0,00</strong>
         </div>
       </div>
 
       <div class="graficos">
-        <div class="grafico-card">
-          <h3>Crescimento do patrimônio</h3>
+        <div class="grafico-card grande">
+          <div class="grafico-cabecalho">
+            <h3>Evolução do patrimônio</h3>
+            <p>Comparação entre o total investido e o saldo bruto.</p>
+          </div>
           <div class="grafico-area">
             <canvas id="graficoPatrimonio"></canvas>
           </div>
         </div>
 
         <div class="grafico-card">
-          <h3>Investimento x Poupança</h3>
+          <div class="grafico-cabecalho">
+            <h3>Investimento x Poupança</h3>
+            <p>Veja qual opção cresce mais no prazo escolhido.</p>
+          </div>
           <div class="grafico-area">
             <canvas id="graficoComparacao"></canvas>
           </div>
         </div>
 
         <div class="grafico-card">
-          <h3>Indicadores recentes</h3>
+          <div class="grafico-cabecalho">
+            <h3>Indicadores recentes</h3>
+            <p>Dados públicos do Banco Central do Brasil.</p>
+          </div>
           <div class="grafico-area">
             <canvas id="graficoIndicadores"></canvas>
           </div>
         </div>
       </div>
 
-      <h3>Evolução mês a mês</h3>
+      <div class="tabela-bloco">
+        <h3>Evolução mês a mês</h3>
 
-      <div class="tabela-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>Mês</th>
-              <th>Investido</th>
-              <th>Saldo bruto</th>
-              <th>Rendimento</th>
-            </tr>
-          </thead>
-          <tbody id="tabela_historico"></tbody>
-        </table>
+        <div class="tabela-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Mês</th>
+                <th>Total investido</th>
+                <th>Saldo bruto</th>
+                <th>Rendimento</th>
+              </tr>
+            </thead>
+            <tbody id="tabela_historico"></tbody>
+          </table>
+        </div>
       </div>
+
+      <p class="aviso-legal">
+        Esta simulação é educativa e usa premissas simplificadas.
+        Rentabilidade passada ou projetada não garante resultados futuros.
+        Confira taxas, carência, liquidez e regras na instituição escolhida.
+      </p>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
   <script>
-    const tipo = document.getElementById("tipo");
+    const bancoSelect = document.getElementById("banco");
+    const produtoSelect = document.getElementById("produto");
+    const tipoSelect = document.getElementById("tipo") || criarCampoTipo();
+
     const camposCdi = document.getElementById("campos_cdi");
     const camposPrefixado = document.getElementById("campos_prefixado");
     const camposIpca = document.getElementById("campos_ipca");
@@ -250,13 +276,24 @@
       currency: "BRL"
     });
 
+    let bancos = [];
     let bancoSelecionado = null;
+    let produtoSelecionado = null;
     let graficoPatrimonio = null;
     let graficoComparacao = null;
     let graficoIndicadores = null;
 
+    function criarCampoTipo() {
+      const campo = document.createElement("input");
+      campo.type = "hidden";
+      campo.id = "tipo";
+      campo.value = "cdb_cdi";
+      document.body.appendChild(campo);
+      return campo;
+    }
+
     function atualizarCampos() {
-      const valor = tipo.value;
+      const valor = tipoSelect.value;
 
       camposCdi.classList.toggle(
         "oculto",
@@ -279,9 +316,6 @@
       );
     }
 
-    tipo.addEventListener("change", atualizarCampos);
-    atualizarCampos();
-
     function mostrarMensagem(texto, tipoMensagem = "erro") {
       const mensagem = document.getElementById("mensagem");
       mensagem.className = `mensagem ${tipoMensagem}`;
@@ -293,160 +327,93 @@
       }, 6000);
     }
 
-    function criarCardBanco(banco) {
-      const card = document.createElement("button");
-      card.className = "banco-card";
-      card.dataset.banco = banco.id;
-
-      card.innerHTML = `
-        <div class="banco-logo" style="--cor:${banco.cor}">
-          <img
-            src="${banco.logo}"
-            alt="${banco.nome}"
-            onload="this.parentElement.classList.add('com-logo')"
-            onerror="this.remove()"
-          >
-          <span class="banco-sigla">${banco.sigla}</span>
-        </div>
-
-        <div class="banco-info">
-          <strong>${banco.nome}</strong>
-          <small>${banco.produtos.length} opções de investimento</small>
-        </div>
-
-        <div class="banco-taxa">
-          <span>Ver ofertas</span>
-          <strong>→</strong>
-        </div>
-      `;
-
-      card.addEventListener("click", () => abrirDetalhesBanco(banco.id));
-
-      return card;
-    }
-
-    async function abrirDetalhesBanco(bancoId) {
-      bancoSelecionado = bancoId;
-
-      document.querySelectorAll(".banco-card").forEach(item => {
-        item.classList.toggle(
-          "selecionado",
-          item.dataset.banco === bancoId
-        );
-      });
-
-      const painel = document.getElementById("detalhes_banco");
-      painel.classList.remove("oculto");
-
-      try {
-        const resposta = await fetch(`/api/bancos/${bancoId}`);
-        const json = await resposta.json();
-
-        if (!json.ok) {
-          mostrarMensagem(json.erro || "Não foi possível carregar o banco.");
-          return;
-        }
-
-        const banco = json.banco;
-
-        document.getElementById("detalhe_nome").textContent = banco.nome;
-        document.getElementById("detalhe_site").href = banco.site;
-        document.getElementById("detalhe_sigla").textContent = banco.sigla;
-
-        const logo = document.getElementById("detalhe_logo");
-        logo.style.setProperty("--cor", banco.cor);
-        logo.classList.remove("com-logo");
-
-        const imagem = document.getElementById("detalhe_img");
-        imagem.src = banco.logo;
-        imagem.onload = () => logo.classList.add("com-logo");
-        imagem.onerror = () => imagem.remove();
-
-        document.getElementById("detalhe_descricao").textContent =
-          "Escolha um investimento abaixo para simular automaticamente.";
-
-        const lista = document.getElementById("lista_produtos");
-        lista.innerHTML = "";
-
-        banco.produtos.forEach(produto => {
-          const item = document.createElement("button");
-          item.className = "produto-card";
-
-          const taxa = produto.percentual_cdi
-            ? `${produto.percentual_cdi}% do CDI`
-            : produto.taxa_prefixada
-              ? `${produto.taxa_prefixada}% a.a.`
-              : "Consultar condições";
-
-          item.innerHTML = `
-            <div>
-              <strong>${produto.nome}</strong>
-              <p>${produto.descricao}</p>
-            </div>
-
-            <div class="produto-taxa">
-              <span>Rentabilidade base</span>
-              <strong>${taxa}</strong>
-            </div>
-          `;
-
-          item.addEventListener("click", () => selecionarProduto(banco, produto));
-
-          lista.appendChild(item);
-        });
-
-        painel.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-
-      } catch (erro) {
-        mostrarMensagem("Não foi possível carregar os investimentos deste banco.");
-      }
-    }
-
-    function selecionarProduto(banco, produto) {
-      tipo.value = produto.tipo;
-      atualizarCampos();
-
-      if (produto.percentual_cdi) {
-        document.getElementById("percentual_cdi").value = produto.percentual_cdi;
-      }
-
-      if (produto.taxa_prefixada) {
-        document.getElementById("taxa_prefixada_aa").value = produto.taxa_prefixada;
-      }
-
-      if (produto.taxa_real_ipca) {
-        document.getElementById("taxa_prefixada_aa_ipca").value = produto.taxa_real_ipca;
-      }
-
-      mostrarMensagem(
-        `${produto.nome} selecionado no ${banco.nome}.`,
-        "sucesso"
-      );
-
-      calcularSimulacao();
-    }
-
     async function carregarBancos() {
-      const lista = document.getElementById("lista_bancos");
-
       try {
         const resposta = await fetch("/api/bancos");
         const json = await resposta.json();
 
         if (!json.ok) return;
 
-        lista.innerHTML = "";
-        json.bancos.forEach(banco => lista.appendChild(criarCardBanco(banco)));
+        bancos = json.bancos;
+
+        bancos.forEach(banco => {
+          const opcao = document.createElement("option");
+          opcao.value = banco.id;
+          opcao.textContent = banco.nome;
+          bancoSelect.appendChild(opcao);
+        });
 
       } catch (erro) {
-        lista.innerHTML = "<p class='texto-ajuda'>Não foi possível carregar os bancos.</p>";
+        mostrarMensagem("Não foi possível carregar a lista de bancos.");
       }
     }
 
-    function criarGraficoLinha(canvasId, rotulos, datasets, titulo) {
+    bancoSelect.addEventListener("change", () => {
+      const banco = bancos.find(item => item.id === bancoSelect.value);
+
+      produtoSelect.innerHTML = "";
+      produtoSelecionado = null;
+
+      if (!banco) {
+        produtoSelect.innerHTML =
+          "<option value=''>Selecione um banco primeiro</option>";
+        return;
+      }
+
+      bancoSelecionado = banco.id;
+
+      const opcaoInicial = document.createElement("option");
+      opcaoInicial.value = "";
+      opcaoInicial.textContent = "Selecione um investimento";
+      produtoSelect.appendChild(opcaoInicial);
+
+      banco.produtos.forEach(produto => {
+        const opcao = document.createElement("option");
+        opcao.value = produto.id;
+        opcao.textContent = produto.nome;
+        produtoSelect.appendChild(opcao);
+      });
+    });
+
+    produtoSelect.addEventListener("change", () => {
+      const banco = bancos.find(item => item.id === bancoSelecionado);
+
+      if (!banco) return;
+
+      const produto = banco.produtos.find(
+        item => item.id === produtoSelect.value
+      );
+
+      if (!produto) {
+        document.getElementById("descricao_produto").textContent =
+          "Ao escolher um investimento, o simulador explica como ele funciona.";
+        return;
+      }
+
+      produtoSelecionado = produto;
+      tipoSelect.value = produto.tipo;
+      atualizarCampos();
+
+      document.getElementById("descricao_produto").textContent =
+        produto.descricao;
+
+      if (produto.percentual_cdi) {
+        document.getElementById("percentual_cdi").value =
+          produto.percentual_cdi;
+      }
+
+      if (produto.taxa_prefixada) {
+        document.getElementById("taxa_prefixada_aa").value =
+          produto.taxa_prefixada;
+      }
+
+      if (produto.taxa_real_ipca) {
+        document.getElementById("taxa_prefixada_aa_ipca").value =
+          produto.taxa_real_ipca;
+      }
+    });
+
+    function criarGraficoLinha(canvasId, rotulos, datasets, titulo, formatoMoeda = true) {
       const ctx = document.getElementById(canvasId);
 
       if (Chart.getChart(ctx)) {
@@ -467,22 +434,51 @@
             intersect: false
           },
           plugins: {
+            legend: {
+              position: "bottom",
+              labels: {
+                usePointStyle: true,
+                boxWidth: 8
+              }
+            },
             title: {
               display: true,
-              text: titulo
+              text: titulo,
+              align: "start",
+              font: {
+                size: 14,
+                weight: "700"
+              }
             },
             tooltip: {
+              backgroundColor: "#101828",
+              padding: 12,
+              cornerRadius: 10,
               callbacks: {
                 label: contexto => {
-                  return `${contexto.dataset.label}: ${brl.format(contexto.parsed.y)}`;
+                  const valor = contexto.parsed.y;
+
+                  return formatoMoeda
+                    ? `${contexto.dataset.label}: ${brl.format(valor)}`
+                    : `${contexto.dataset.label}: ${valor.toFixed(2)}%`;
                 }
               }
             }
           },
           scales: {
+            x: {
+              grid: {
+                display: false
+              }
+            },
             y: {
+              grid: {
+                color: "#eef2f7"
+              },
               ticks: {
-                callback: valor => brl.format(valor)
+                callback: valor => formatoMoeda
+                  ? brl.format(valor)
+                  : valor + "%"
               }
             }
           }
@@ -501,20 +497,24 @@
             label: "Total investido",
             data: r.historico.map(item => item.aportado),
             borderColor: "#2563eb",
-            backgroundColor: "rgba(37, 99, 235, 0.15)",
+            backgroundColor: "rgba(37, 99, 235, 0.12)",
             fill: true,
-            tension: 0.35
+            tension: 0.35,
+            pointRadius: 0,
+            borderWidth: 3
           },
           {
             label: "Saldo bruto",
             data: r.historico.map(item => item.saldo_bruto),
-            borderColor: "#059669",
-            backgroundColor: "rgba(5, 150, 105, 0.15)",
+            borderColor: "#0b5d3b",
+            backgroundColor: "rgba(11, 93, 59, 0.12)",
             fill: true,
-            tension: 0.35
+            tension: 0.35,
+            pointRadius: 0,
+            borderWidth: 3
           }
         ],
-        "Evolução do saldo"
+        "Crescimento do patrimônio"
       );
 
       graficoComparacao = criarGraficoLinha(
@@ -524,18 +524,22 @@
           {
             label: r.investimento,
             data: r.historico.map(item => item.saldo_bruto),
-            borderColor: "#059669",
-            backgroundColor: "rgba(5, 150, 105, 0.15)",
+            borderColor: "#0b5d3b",
+            backgroundColor: "rgba(11, 93, 59, 0.12)",
             fill: true,
-            tension: 0.35
+            tension: 0.35,
+            pointRadius: 0,
+            borderWidth: 3
           },
           {
             label: "Poupança",
             data: r.comparacao_poupanca.historico.map(item => item.saldo_bruto),
             borderColor: "#f59e0b",
-            backgroundColor: "rgba(245, 158, 11, 0.15)",
+            backgroundColor: "rgba(245, 158, 11, 0.12)",
             fill: true,
-            tension: 0.35
+            tension: 0.35,
+            pointRadius: 0,
+            borderWidth: 3
           }
         ],
         "Comparação com a poupança"
@@ -573,58 +577,48 @@
 
         if (cdi.historico.length) {
           datasets.push({
-            label: "CDI (%)",
+            label: "CDI",
             data: cdi.historico.map(item => item.valor),
             borderColor: "#0b5d3b",
-            backgroundColor: "rgba(11, 93, 59, 0.15)",
+            backgroundColor: "rgba(11, 93, 59, 0.10)",
             fill: true,
-            tension: 0.35
+            tension: 0.35,
+            pointRadius: 0,
+            borderWidth: 3
           });
         }
 
         if (dados.selic_meta.historico.length) {
           datasets.push({
-            label: "Selic meta (%)",
+            label: "Selic",
             data: dados.selic_meta.historico.map(item => item.valor),
             borderColor: "#2563eb",
-            backgroundColor: "rgba(37, 99, 235, 0.15)",
-            tension: 0.35
+            backgroundColor: "rgba(37, 99, 235, 0.10)",
+            tension: 0.35,
+            pointRadius: 0,
+            borderWidth: 3
           });
         }
 
         if (dados.ipca.historico.length) {
           datasets.push({
-            label: "IPCA (%)",
+            label: "IPCA",
             data: dados.ipca.historico.map(item => item.valor),
             borderColor: "#dc2626",
-            backgroundColor: "rgba(220, 38, 38, 0.15)",
-            tension: 0.35
+            backgroundColor: "rgba(220, 38, 38, 0.10)",
+            tension: 0.35,
+            pointRadius: 0,
+            borderWidth: 3
           });
         }
 
-        const ctx = document.getElementById("graficoIndicadores");
-
-        if (Chart.getChart(ctx)) {
-          Chart.getChart(ctx).destroy();
-        }
-
-        graficoIndicadores = new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: rotulos,
-            datasets
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              title: {
-                display: true,
-                text: "Últimos períodos — Banco Central"
-              }
-            }
-          }
-        });
+        graficoIndicadores = criarGraficoLinha(
+          "graficoIndicadores",
+          rotulos,
+          datasets,
+          "CDI, Selic e IPCA",
+          false
+        );
 
       } catch (erro) {
         console.error(erro);
@@ -638,14 +632,14 @@
 
       const payload = {
         banco_id: bancoSelecionado,
-        tipo: tipo.value,
+        tipo: tipoSelect.value,
         valor_inicial: document.getElementById("valor_inicial").value,
         aporte_mensal: document.getElementById("aporte_mensal").value,
         meses: document.getElementById("meses").value,
         cdi_aa: document.getElementById("cdi_aa").value,
         percentual_cdi: document.getElementById("percentual_cdi").value,
         taxa_prefixada_aa:
-          tipo.value === "tesouro_ipca"
+          tipoSelect.value === "tesouro_ipca"
             ? document.getElementById("taxa_prefixada_aa_ipca").value
             : document.getElementById("taxa_prefixada_aa").value,
         ipca_aa: document.getElementById("ipca_aa").value,
@@ -686,34 +680,37 @@
 
     function mostrarResultado(r) {
       document.getElementById("resultado").classList.remove("oculto");
-      document.getElementById("nome_investimento").textContent = r.investimento;
 
-      const banco = bancoSelecionado
-        ? bancoSelecionado.replace("_", " ").toUpperCase()
-        : "Simulação personalizada";
+      const banco = bancos.find(item => item.id === bancoSelecionado);
 
-      document.getElementById("banco_selecionado").textContent =
-        `Instituição selecionada: ${banco}`;
+      document.getElementById("nome_investimento").textContent =
+        produtoSelecionado
+          ? produtoSelecionado.nome
+          : r.investimento;
 
-      document.getElementById("total_aportado").textContent =
-        brl.format(r.total_aportado);
-
-      document.getElementById("saldo_bruto").textContent =
-        brl.format(r.saldo_bruto);
-
-      document.getElementById("rendimento_bruto").textContent =
-        brl.format(r.rendimento_bruto);
-
-      document.getElementById("ir_valor").textContent =
-        brl.format(r.ir_valor);
+      document.getElementById("banco_selecionado").textContent = banco
+        ? `${banco.nome} • ${r.investimento}`
+        : r.investimento;
 
       document.getElementById("saldo_liquido").textContent =
         brl.format(r.saldo_liquido);
 
+      document.getElementById("prazo_texto").textContent =
+        `Estimativa para ${r.meses} meses`;
+
+      document.getElementById("total_aportado").textContent =
+        brl.format(r.total_aportado);
+
       document.getElementById("rendimento_liquido").textContent =
         brl.format(r.rendimento_liquido);
 
+      document.getElementById("ir_valor").textContent =
+        brl.format(r.ir_valor);
+
       const diferenca = r.comparacao_poupanca.diferenca_a_favor;
+
+      document.getElementById("diferenca_poupanca").textContent =
+        brl.format(diferenca);
 
       document.getElementById("comparacao").textContent =
         diferenca >= 0
@@ -744,7 +741,10 @@
       });
     }
 
-    document.getElementById("btn_simular").addEventListener("click", calcularSimulacao);
+    document.getElementById("btn_simular").addEventListener(
+      "click",
+      calcularSimulacao
+    );
 
     document.addEventListener("DOMContentLoaded", () => {
       carregarBancos();
